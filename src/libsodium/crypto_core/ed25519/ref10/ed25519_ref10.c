@@ -820,6 +820,7 @@ ge25519_scalarmult_base(ge25519_p3 *h, const unsigned char *a)
     /* each e[i] is between -8 and 8 */
 
     ge25519_p3_0(h);
+
     for (i = 1; i < 64; i += 2) {
         ge25519_select_base(&t, i / 2, e[i]);
         ge25519_madd(&r, h, &t);
@@ -1966,7 +1967,7 @@ ge25519_from_uniform(unsigned char s[32], const unsigned char r[32])
     /* recover x */
     s[31] |= x_sign;
     if (ge25519_frombytes(&p3, s) != 0) {
-        abort();
+        abort(); /* LCOV_EXCL_LINE */
     }
 
     /* multiply by the cofactor */

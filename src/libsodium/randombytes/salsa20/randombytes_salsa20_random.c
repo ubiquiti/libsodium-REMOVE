@@ -453,6 +453,7 @@ randombytes_salsa20_random_close(void)
 static void
 randombytes_salsa20_random_xorhwrand(void)
 {
+/* LCOV_EXCL_START */
 #ifdef HAVE_RDRAND
     unsigned int r;
 
@@ -463,6 +464,7 @@ randombytes_salsa20_random_xorhwrand(void)
     * (uint32_t *) (void *)
         &stream.key[crypto_stream_salsa20_KEYBYTES - 4] ^= (uint32_t) r;
 #endif
+/* LCOV_EXCL_STOP */
 }
 
 /*

@@ -1,6 +1,19 @@
 #define TEST_NAME "core_ed25519"
 #include "cmptest.h"
 
+static const unsigned char non_canonical_p[32] = {
+    0xf6, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
+};
+static const unsigned char non_canonical_invalid_p[32] = {
+    0xf5, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
+};
+static const unsigned char max_canonical_p[32] = {
+    0xe4, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
+};
+
 static void
 add_P(unsigned char * const S)
 {
@@ -96,12 +109,31 @@ main(void)
     p[0] = 9;
     assert(crypto_core_ed25519_is_valid_point(p) == 1);
 
+    assert(crypto_core_ed25519_is_valid_point(max_canonical_p) == 1);
+    assert(crypto_core_ed25519_is_valid_point(non_canonical_invalid_p) == 0);
+    assert(crypto_core_ed25519_is_valid_point(non_canonical_p) == 0);
+
     memcpy(p2, p, crypto_core_ed25519_BYTES);
     add_P(p2);
     crypto_core_ed25519_add(p3, p2, p2);
     crypto_core_ed25519_sub(p3, p3, p2);
     assert(memcmp(p2, p, crypto_core_ed25519_BYTES) != 0);
     assert(memcmp(p3, p, crypto_core_ed25519_BYTES) == 0);
+
+    p[0] = 2;
+    assert(crypto_core_ed25519_add(p3, p2, p) == -1);
+    assert(crypto_core_ed25519_add(p3, p2, non_canonical_p) == 0);
+    assert(crypto_core_ed25519_add(p3, p2, non_canonical_invalid_p) == -1);
+    assert(crypto_core_ed25519_add(p3, p, p3) == -1);
+    assert(crypto_core_ed25519_add(p3, non_canonical_p, p3) == 0);
+    assert(crypto_core_ed25519_add(p3, non_canonical_invalid_p, p3) == -1);
+
+    assert(crypto_core_ed25519_sub(p3, p2, p) == -1);
+    assert(crypto_core_ed25519_sub(p3, p2, non_canonical_p) == 0);
+    assert(crypto_core_ed25519_sub(p3, p2, non_canonical_invalid_p) == -1);
+    assert(crypto_core_ed25519_sub(p3, p, p3) == -1);
+    assert(crypto_core_ed25519_sub(p3, non_canonical_p, p3) == 0);
+    assert(crypto_core_ed25519_sub(p3, non_canonical_invalid_p, p3) == -1);
 
     sodium_free(sc);
     sodium_free(p3);
