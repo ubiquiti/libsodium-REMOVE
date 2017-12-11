@@ -60,7 +60,7 @@ main(void)
     }
     printf("\n");
 
-#ifndef MINIMAL
+#ifndef SODIUM_LIBRARY_MINIMAL
     pos = 0;
     do {
         do {
