@@ -12,8 +12,9 @@ tv_kdf(void)
     uint64_t       i;
 
     context = (char *) sodium_malloc(crypto_kdf_CONTEXTBYTES);
-    memcpy(context, "KDF test", strlen("KDF test"));
     master_key = (unsigned char *) sodium_malloc(crypto_kdf_KEYBYTES);
+
+    memcpy(context, "KDF test", strlen("KDF test"));
     for (i = 0; i < crypto_kdf_KEYBYTES; i++) {
         master_key[i] = i;
     }
@@ -38,6 +39,9 @@ tv_kdf(void)
         }
         sodium_free(subkey);
     }
+
+    sodium_free(master_key);
+    sodium_free(context);
 
     assert(strcmp(crypto_kdf_primitive(), crypto_kdf_PRIMITIVE) == 0);
     assert(crypto_kdf_BYTES_MAX > 0);
