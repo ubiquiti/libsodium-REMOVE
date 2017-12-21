@@ -264,7 +264,7 @@ AS_CASE([$host_os],
 AS_IF([test "x$enable_ssp" != "xno"],[
 
 AS_CASE([$host_os],
-  [cygwin*|mingw*|msys|pw32*|cegcc*], [ ],
+  [cygwin*|mingw*|msys|pw32*|cegcc*|haiku], [ ],
   [*], [
     AX_CHECK_COMPILE_FLAG([-fstack-protector], [
       AX_CHECK_LINK_FLAG([-fstack-protector],
@@ -635,10 +635,10 @@ AC_SUBST(HAVE_AVX_ASM_V)
 AC_MSG_CHECKING(for 128-bit arithmetic)
 HAVE_TI_MODE_V=0
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#if !defined(__GNUC__) && !defined(__SIZEOF_INT128__)
+#if !defined(__clang__) && !defined(__GNUC__) && !defined(__SIZEOF_INT128__)
 # error mode(TI) is a gcc extension, and __int128 is not available
 #endif
-#if defined(__clang__) && !defined(__x86_64__)
+#if defined(__clang__) && !defined(__x86_64__) && !defined(__ARM_NEON)
 # error clang does not properly handle the 128-bit type on 32-bit systems
 #endif
 #ifndef NATIVE_LITTLE_ENDIAN

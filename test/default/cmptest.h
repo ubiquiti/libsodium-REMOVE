@@ -137,7 +137,10 @@ int main(void)
     if (sodium_init() != 0) {
         return 99;
     }
+
+#ifndef __EMSCRIPTEN__
     randombytes_set_implementation(&randombytes_salsa20_implementation);
+#endif
     ts_start = now();
     for (i = 0; i < ITERATIONS; i++) {
         if (xmain() != 0) {
@@ -153,11 +156,12 @@ int main(void)
     return 0;
 }
 
+#undef  printf
 #define printf(...) do { } while(0)
 
 #elif !defined(BROWSER_TESTS)
 
-FILE *fp_res;
+static FILE *fp_res;
 
 int main(void)
 {
