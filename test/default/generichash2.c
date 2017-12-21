@@ -13,7 +13,7 @@ main(void)
     size_t                   h, i, j;
 
     assert(crypto_generichash_statebytes() >= sizeof *st);
-    st = sodium_malloc(crypto_generichash_statebytes());
+    st = (unsigned char *) sodium_malloc(crypto_generichash_statebytes());
     for (h = 0; h < crypto_generichash_KEYBYTES_MAX; ++h) {
         k[h] = (unsigned char) h;
     }
