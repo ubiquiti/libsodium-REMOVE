@@ -113,8 +113,8 @@ sodium_memzero(void *const pnt, const size_t len)
 #elif HAVE_WEAK_SYMBOLS
     memset(pnt, 0, len);
     _sodium_dummy_symbol_to_prevent_memzero_lto(pnt, len);
-# ifdef HAVE_AMD64_ASM
-    __asm__ __volatile__ ("" : : "p"(pnt));
+# ifdef HAVE_INLINE_ASM
+    __asm__ __volatile__ ("" : : "r"(pnt) : "memory");
 # endif
 #else
     volatile unsigned char *volatile pnt_ =

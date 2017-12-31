@@ -580,6 +580,18 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
    CPPFLAGS="$CPPFLAGS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS"
 ])
 
+AC_MSG_CHECKING(whether we can use inline asm code)
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+]], [[
+int a = 42;
+int *pnt = &a;
+__asm__ __volatile__ ("" : : "r"(pnt) : "memory");
+]])],
+  [AC_MSG_RESULT(yes)
+   AC_DEFINE([HAVE_INLINE_ASM], [1], [inline asm code can be used])]
+  [AC_MSG_RESULT(no)]
+)
+
 HAVE_AMD64_ASM_V=0
 AS_IF([test "$enable_asm" != "no"],[
   AC_MSG_CHECKING(whether we can use x86_64 asm code)
@@ -645,8 +657,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 # error libsodium currently expects a little endian CPU for the 128-bit type
 #endif
 #ifdef __EMSCRIPTEN__
-# error emscripten currently supports only shift operations on integers \
-#       larger than 64 bits
+# error emscripten currently doesn't support some operations on integers larger than 64 bits
 #endif
 #include <stddef.h>
 #include <stdint.h>
@@ -657,6 +668,8 @@ typedef unsigned uint128_t __attribute__((mode(TI)));
 #endif
 void fcontract(uint128_t *t) {
   *t += 0x8000000000000 - 1;
+  *t *= *t;
+  *t >>= 84;
 }
 ]], [[
 (void) fcontract;
