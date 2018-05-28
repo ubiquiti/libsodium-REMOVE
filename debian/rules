@@ -2,7 +2,7 @@
 
 override_dh_auto_configure:
 	autoreconf -fmi
-	./configure --host=$(DEB_HOST_GNU_TYPE) --disable-valgrind
+	./configure --host=$(DEB_HOST_GNU_TYPE) --prefix=/usr --disable-valgrind
 
 %:
 	dh  $@

@@ -14,8 +14,7 @@ SUBDIRS = \
 	contrib \
 	dist-build \
 	msvc-scripts \
-	src \
-	test
+	src
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = @PACKAGE_NAME@.pc
