@@ -1,0 +1,12 @@
+Source: libsodium23
+Section: contrib/net
+Priority: extra
+Maintainer: UBNT Package Maintainers <maintainers@ubnt.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: libsodium23
+Architecture: any
+Description: NaCl (pronounced "salt") is a new easy-to-use
+ high-speed software library for network communication,
+ encryption, decryption, signatures, etc.
